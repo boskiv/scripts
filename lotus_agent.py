@@ -13,7 +13,7 @@ import re,sys
 import msvcrt
 from lepl.apps.rfc3696 import Email
 
-notesServer  = 'NOTES'
+notesServer  = 'NOTE'
 notesFile    = 'mailjrn.nsf'
 notesPass    = 'xxXX1234'
 relay        = '10.60.0.1'
@@ -23,10 +23,12 @@ try:
   notesSession = Dispatch('Lotus.NotesSession')
   notesSession.Initialize(notesPass)
   notesDatabase = notesSession.GetDatabase(notesServer, notesFile)
+  folder = notesDatabase.GetView('$All')
 except pywintypes.com_error as ex:
   print(ex.strerror,ex.excepinfo[2])
   sys.exit()
-validate_email = Email();
+
+
 
 # Given a document, return a list of attachment filenames and their contents
 def extractAttachments(document):
@@ -46,6 +48,7 @@ def extractAttachments(document):
             attachmentPacks.append(fileName)
     return attachmentPacks
 
+validate_email = Email();
 def ConvertLotusSender(sender):
     # Если к нам приходит email пропускаем его
     if validate_email(sender):
@@ -107,7 +110,7 @@ def PrepareAndSend(document):
   
 
 
-folder = notesDatabase.GetView('$All')
+
 # while True: 
 print("Press Ctrl+x to exit")
 while True:
