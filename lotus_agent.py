@@ -32,21 +32,21 @@ except pywintypes.com_error as ex:
 
 # Given a document, return a list of attachment filenames and their contents
 def extractAttachments(document):
-    # Prepare
-    attachmentPacks = []
-    # For each item,
-    for whichItem in range(len(document.Items)):
-        # Get item
-        item = document.Items[whichItem]
-        # If the item is an attachment,
-        if item.Name == '$FILE':
-            # Get the attachment
-            fileName = item.Values[0]
-            fileBase, separator, fileExtension = fileName.rpartition('.')
-            attachment = document.GetAttachment(fileName)
-            attachment.ExtractFile(fileName)
-            attachmentPacks.append(fileName)
-    return attachmentPacks
+  # Prepare
+  attachmentPacks = []
+  # For each item,
+  for Item in document.Items:
+    # Get item
+    item = Item
+    # If the item is an attachment,
+    if item.Name == '$FILE':
+        # Get the attachment
+        fileName = item.Values[0]
+        fileBase, separator, fileExtension = fileName.rpartition('.')
+        attachment = document.GetAttachment(fileName)
+        attachment.ExtractFile(fileName)
+        attachmentPacks.append(fileName)
+  return attachmentPacks
 
 validate_email = Email();
 def ConvertLotusSender(sender):
@@ -60,10 +60,7 @@ def ConvertLotusSender(sender):
       return(".".join(seq)+"@"+notesServer+".local")
     
 def ConvertLotusRecipients(rcpt):
-    rcpt_list = []
-    for r in rcpt:
-      rcpt_list.append(ConvertLotusSender(r))
-    return rcpt_list
+  return [ConvertLotusSender(r) for r in rcpt]
 
 def sendMail(fromWhom, to, subj, text, att):
   msg = MIMEMultipart('alternative')
@@ -120,7 +117,6 @@ while True:
       PrepareAndSend(document)
     document.RemovePermanently(True)
   # Exit by Ctrl+x  
-  if msvcrt.kbhit():
-    if ord(msvcrt.getch()) == 24:
-      break
+  if msvcrt.kbhit() and ord(msvcrt.getch()) == 24:
+    break
     
